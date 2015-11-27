@@ -1,0 +1,35 @@
+I want to create a CentOS5 base image by my self. But unfortunatly,
+I can't install docker tools on CentOS 5. But considering docker image can be 
+imported by docker tool with a CentOS 5 rootfs tar package. So comes this article.
+
+1. Install a CentOS 5 virtual machine.
+
+2. Install febootstrap tools on this virutal machine. This maybe a little triky because there 
+is no febootstrap package in CentOS 5 yum repository. I install it by downloading approprite RPM package. During this process, you may also need to install its dependency packages and add fedora epel repository to CentOS5 's default repository.
+
+3. Create a base image containing those packages you wanted.
+
+            # mkdir centos5
+            # febootstrap --names 'bash' 'ls' -o centos5
+              (This means we will install bash and ls. Destinition directory is centos5.)
+
+
+4. Reconstruct the image.
+            # febootstrap-supermin-helper -f ext2 cetnos5 x86_64 kernel initrd root
+              (Here, root is the rootfs image we wanted)
+
+5. Then transfer this image to a host with docker engine.
+
+6. Mount the image.
+            
+            # mount root /mnt
+            # cd /mnt
+
+7. Create docker image
+
+            # tar -c . | docker import - centos5base
+
+
+
+
+
